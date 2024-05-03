@@ -1,6 +1,5 @@
 export default {
   port: 1337,
-  dbUri:
-    'mongodb+srv://sidharthsreekumardev:yiGZXuInuEmOnB2s@cluster0.lf4dnhh.mongodb.net/',
+  dbUri: "mongodb://localhost:27017/appointments-db",
   saltWorkFactor: 10,
 };

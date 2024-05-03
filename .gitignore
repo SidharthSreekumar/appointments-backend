@@ -6,3 +6,6 @@ yarn.lock
 # Project
 dist
 .env
+
+# IDE
+.vscode
