@@ -12,12 +12,14 @@ const userId = new mongoose.Types.ObjectId().toString();
 const userPayload = {
   _id: userId,
   email: "a@a.com",
-  name: "John Doe",
+  firstName: "John",
+  lastName: "Doe",
 };
 
 const userInput = {
   email: "a@a.com",
-  name: "John Doe",
+  firstName: "John",
+  lastName: "Doe",
   password: "Password1234",
   passwordConfirmation: "Password1234",
 };
