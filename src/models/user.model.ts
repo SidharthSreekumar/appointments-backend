@@ -4,7 +4,8 @@ import config from 'config';
 
 export interface UserInput {
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   password: string;
 }
 
@@ -21,9 +22,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    name: {
+    firstName: {
       type: String,
       required: true,
+    },
+    lastName: {
+      type: String,
+      required: false,
     },
     password: {
       type: String,
