@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from "zod";
+import { boolean, object, string, TypeOf } from "zod";
 
 export const createUserSchema = object({
   body: object({
@@ -25,3 +25,5 @@ export type CreateUserInput = Omit<
   TypeOf<typeof createUserSchema>,
   "body.passwordConfirmation"
 >;
+
+// isAdmin is omitted at the moment. Admin creation feature via front-end is for future.

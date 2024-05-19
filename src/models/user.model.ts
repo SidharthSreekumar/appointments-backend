@@ -10,6 +10,7 @@ export interface UserInput {
 }
 
 export interface UserDocument extends UserInput, mongoose.Document {
+  isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -34,6 +35,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isAdmin: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,
