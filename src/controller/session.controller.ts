@@ -6,8 +6,8 @@ import config from "config";
 
 export async function createUserSessionHandler(req: Request, res: Response) {
   const user = await validatePassword(req.body);
-
-  if (!user) {
+  
+  if (!user || !user._id) {
     return res.status(401).send("Invalid email or password");
   }
 

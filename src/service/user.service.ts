@@ -5,7 +5,7 @@ import { FilterQuery } from "mongoose";
 export async function createUser(input: UserInput) {
   try {
     const user = await UserModel.create(input);
-    return omit(user.toJSON(), ["password", "isAdmin"]);
+    return omit(user.toJSON({flattenMaps: true}), ["password", "isAdmin", "__v"]);
   } catch (error: any) {
     throw new Error(error);
   }
@@ -25,7 +25,11 @@ export async function validatePassword({
 
   if (!isValid) return false;
 
-  return omit(user.toJSON(), ["password", "isAdmin"]);
+  return omit(user.toObject({ flattenMaps: true }), [
+    "password",
+    "isAdmin",
+    "__v",
+  ]);
 }
 
 export async function findUser(query: FilterQuery<UserDocument>) {

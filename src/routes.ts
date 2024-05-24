@@ -10,6 +10,9 @@ import {
 import { createSessionSchema } from "./schema/sessions.schema";
 import requireUser from "./middleware/requireUser";
 import { createServiceTypeHandler } from "./controller/serviceType.controller";
+import { createAppointmentHandler } from "./controller/appointment.controller";
+import { createServiceTypeSchema } from "./schema/serviceType.schema";
+import { createAppointmentSchema } from "./schema/appointment.schema";
 
 function routes(app: Express) {
   app.get("/healthcheck", (req: Request, res: Response) => {
@@ -37,8 +40,22 @@ function routes(app: Express) {
   /**
    * Service Type
    */
+  app.post(
+    "/api/service-type",
+    requireUser,
+    validateResource(createServiceTypeSchema),
+    createServiceTypeHandler
+  );
 
-  app.post("/api/service-type", requireUser, createServiceTypeHandler);
+  /**
+   * Appointments
+   */
+  app.post(
+    "/api/appointment",
+    requireUser,
+    validateResource(createAppointmentSchema),
+    createAppointmentHandler
+  );
 }
 
 export default routes;

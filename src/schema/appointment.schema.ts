@@ -1,18 +1,14 @@
-import { date, object, string } from "zod";
+import { object, string, TypeOf } from "zod";
 
 export const createAppointmentSchema = object({
   body: object({
-    serviceType: string({
+    serviceTypeId: string({
       required_error: "Service Type ID is required",
     }),
-    date: date({
+    dateTime: string({
       required_error: "Date is required",
-    }),
-    startTime: date({
-      required_error: "Start time is required",
-    }),
-    endTime: date({
-      required_error: "End time is required",
-    }),
+    }).datetime(),
   }),
 });
+
+export type CreateAppointmentInput = TypeOf<typeof createAppointmentSchema>;

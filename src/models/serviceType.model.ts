@@ -19,7 +19,7 @@ export interface ServiceTypeDocument
 const serviceSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    serviceTypeId: { type: String },
+    serviceTypeId: { type: String, unique: true },
     description: { type: String, required: true },
     duration: { type: Number, required: true },
     price: { type: Number, required: true },
@@ -40,7 +40,8 @@ serviceSchema.pre("save", async function (next) {
     return next(new Error("Service Type with this name already exists"));
   }
   const randomString = await getAlphaNumString(10);
-  serviceType.serviceTypeId = serviceType.name.toLowerCase() + '-' + randomString;
+  serviceType.serviceTypeId =
+    serviceType.name.toLowerCase() + "-" + randomString;
 });
 
 const ServiceTypeModel = mongoose.model<ServiceTypeDocument>(

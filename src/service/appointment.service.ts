@@ -1,6 +1,7 @@
 import AppointmentModel, {
   AppointmentInput,
 } from "../models/appointment.model";
+import { UserDocument } from "../models/user.model";
 
 /**
  * Create an appointment
@@ -18,13 +19,11 @@ export async function createAppointment(input: AppointmentInput) {
 
 /**
  * Get all active appointments
- * 
- * @returns active appointmentsservice.model
+ *
+ * @returns active appointments
  */
 export async function getActiveAppointment() {
   return await AppointmentModel.find({ valid: true });
 }
 
-export async function getAvailableTimeSlots() {
-  
-}
+export async function getAvailableTimeSlots() {}
