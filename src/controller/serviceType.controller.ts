@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { createServiceType } from "../service/serviceType.service";
-import log from "../utils/logger";
+import log from "../utils/logger.util";
 import { CreateServiceTypeInput } from "../schema/serviceType.schema";
 
 export async function createServiceTypeHandler(

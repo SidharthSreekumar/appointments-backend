@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import { UserDocument } from "./user.model";
-import { ServiceDocument } from "./serviceType.model";
+import { ServiceTypeDocument } from "./serviceType.model";
 
 export interface AppointmentInput {
   client: UserDocument["_id"];
-  serviceType: ServiceDocument["_id"];
+  serviceTypeId: string;
   date: Date;
   startTime: Date;
   endTime: Date;
@@ -21,7 +21,7 @@ export interface AppointmentDocument
 const appointmentSchema = new mongoose.Schema(
   {
     client: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    serviceType: { type: mongoose.Schema.Types.ObjectId, ref: "Service" },
+    serviceTypeId: { type: String, required: true },
     date: { type: Date, required: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
@@ -31,6 +31,20 @@ const appointmentSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+appointmentSchema.pre("save", async function (next) {
+  const appointment = this as AppointmentDocument;
+  const existingAppointment = await AppointmentModel.findOne({
+    startTime: { $lt: appointment.endTime },
+    endTime: { $gt: appointment.startTime },
+  });
+
+  if (existingAppointment) {
+    throw new Error("Slot is already booked for time");
+  }
+
+  next();
+});
 
 const AppointmentModel = mongoose.model<AppointmentDocument>(
   "Appointment",
