@@ -1,6 +1,6 @@
 import { number, object, string, TypeOf } from "zod";
 
-export const createServiceTypeSchema = object({
+const payload = {
   body: object({
     name: string({
       required_error: "Service Type name is required",
@@ -15,6 +15,28 @@ export const createServiceTypeSchema = object({
       required_error: "Service price is required",
     }),
   }),
+};
+
+const params = {
+  params: object({
+    serviceTypeId: string({
+      required_error: "Service Type Id is required",
+    }),
+  }),
+};
+
+export const createServiceTypeSchema = object({
+  ...payload,
 });
 
-export type CreateServiceTypeInput =  TypeOf<typeof createServiceTypeSchema>;
+export const getServiceTypeSchema = object({
+  ...params,
+});
+
+export const updateServiceTypeSchema = object({
+  ...payload,
+  ...params,
+});
+
+export type CreateServiceTypeInput = TypeOf<typeof createServiceTypeSchema>;
+export type GetServiceTypeInput = TypeOf<typeof getServiceTypeSchema>;

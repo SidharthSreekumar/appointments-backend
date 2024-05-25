@@ -12,6 +12,7 @@ export interface ServiceTypeDocument
   extends ServiceTypeInput,
     mongoose.Document {
   serviceTypeId: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,10 +20,11 @@ export interface ServiceTypeDocument
 const serviceSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    serviceTypeId: { type: String, unique: true },
     description: { type: String, required: true },
     duration: { type: Number, required: true },
     price: { type: Number, required: true },
+    serviceTypeId: { type: String, unique: true },
+    isActive: { type: Boolean, default: true },
   },
   {
     timestamps: true,

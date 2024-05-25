@@ -9,9 +9,16 @@ import {
 } from "./controller/session.controller";
 import { createSessionSchema } from "./schema/sessions.schema";
 import requireUser from "./middleware/requireUser";
-import { createServiceTypeHandler } from "./controller/serviceType.controller";
+import {
+  createServiceTypeHandler,
+  getAllActiveServiceTypesHandler,
+  getServiceTypeHandler,
+} from "./controller/serviceType.controller";
 import { createAppointmentHandler } from "./controller/appointment.controller";
-import { createServiceTypeSchema } from "./schema/serviceType.schema";
+import {
+  createServiceTypeSchema,
+  getServiceTypeSchema,
+} from "./schema/serviceType.schema";
 import { createAppointmentSchema } from "./schema/appointment.schema";
 
 function routes(app: Express) {
@@ -40,12 +47,23 @@ function routes(app: Express) {
   /**
    * Service Type
    */
+
+  // Create Service Type
   app.post(
     "/api/service-type",
     requireUser,
     validateResource(createServiceTypeSchema),
     createServiceTypeHandler
   );
+
+  // Get Service Type
+  app.get(
+    "/api/service-type/:serviceTypeId",
+    validateResource(getServiceTypeSchema),
+    getServiceTypeHandler
+  );
+  // Get All Active Service Types
+  app.get("/api/service-type", getAllActiveServiceTypesHandler);
 
   /**
    * Appointments
