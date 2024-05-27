@@ -1,11 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { CreateAppointmentInput } from "../schema/appointment.schema";
 import { createAppointment } from "../service/appointment.service";
 import log from "../utils/logger.util";
+import HttpException from "../utils/exceptions/http.exception";
 
 export async function createAppointmentHandler(
   req: Request<object, object, CreateAppointmentInput["body"]>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) {
   try {
     const userId = res.locals.user._id;
@@ -16,6 +18,6 @@ export async function createAppointmentHandler(
     return res.send(appointment);
   } catch (error: any) {
     log.error(error);
-    return res.status(409).send(error?.message);
+    next(new HttpException(409, error?.message));
   }
 }

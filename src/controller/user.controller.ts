@@ -1,17 +1,21 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import log from "../utils/logger.util";
 import { createUser } from "../service/user.service";
 import { CreateUserInput } from "../schema/user.schema";
+import HttpException from "../utils/exceptions/http.exception";
 
+// @desc creates a new user
+// @route POST /api/users
 export async function createUserHandler(
   req: Request<object, object, CreateUserInput["body"]>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) {
   try {
     const user = await createUser(req.body);
     return res.send(user);
   } catch (error: any) {
     log.error(error);
-    return res.status(409).send({ error: error.message });
+    next(new HttpException(409, error?.message));
   }
 }

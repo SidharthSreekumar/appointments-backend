@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   createServiceType,
   getAllActiveServiceTypes,
@@ -9,10 +9,12 @@ import {
   CreateServiceTypeInput,
   GetServiceTypeInput,
 } from "../schema/serviceType.schema";
+import HttpException from "../utils/exceptions/http.exception";
 
 export async function createServiceTypeHandler(
   req: Request<object, object, CreateServiceTypeInput["body"]>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) {
   try {
     const userId = res.locals.user._id;
@@ -20,13 +22,14 @@ export async function createServiceTypeHandler(
     return res.send(serviceType);
   } catch (error: any) {
     log.error(error);
-    return res.status(401).send(error?.message);
+    next(new HttpException(401, error?.message));
   }
 }
 
 export async function getServiceTypeHandler(
   req: Request<GetServiceTypeInput["params"]>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) {
   try {
     const serviceTypeId = req.params.serviceTypeId;
@@ -35,19 +38,20 @@ export async function getServiceTypeHandler(
     return res.send(serviceType);
   } catch (error: any) {
     log.error(error);
-    res.status(404).send(error.message);
+    next(new HttpException(404, error?.message));
   }
 }
 
 export async function getAllActiveServiceTypesHandler(
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) {
   try {
     const serviceTypes = await getAllActiveServiceTypes();
     return res.send(serviceTypes);
   } catch (error: any) {
     log.error(error);
-    res.status(404).send(error.message);
+    next(new HttpException(404, error?.message));
   }
 }

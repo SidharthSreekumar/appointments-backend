@@ -6,7 +6,7 @@ export const createAppointmentSchema = object({
       required_error: "Service Type ID is required",
     }),
     dateTime: string({
-      required_error: "Date is required",
+      required_error: "Date and time is required",
     }).datetime(),
   }),
 });

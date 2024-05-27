@@ -4,6 +4,7 @@ import routes from "../routes/app.routes";
 import userRoutes from "../routes/user.routes";
 import sessionRoutes from "../routes/session.routes";
 import serviceTypeRoutes from "../routes/serviceType.routes";
+import errorHandler from "../middleware/errorHandler";
 
 function createServer() {
   const app = express();
@@ -17,6 +18,8 @@ function createServer() {
   app.use("/api/service-type", serviceTypeRoutes);
 
   routes(app);
+
+  app.use(errorHandler);
 
   return app;
 }
