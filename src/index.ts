@@ -1,10 +1,8 @@
-import log from './utils/logger.util';
-import connect from './utils/mongoose.util';
-import config from 'config';
-import createServer from './utils/server.util';
+import log from "./utils/logger.util";
+import connect from "./utils/mongoose.util";
+import createServer from "./utils/server.util";
 
-
-const PORT = config.get<number>('port');
+const PORT = process.env.PORT || 1337;
 
 const app = createServer();
 

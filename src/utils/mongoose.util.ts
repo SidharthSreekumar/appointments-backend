@@ -1,15 +1,14 @@
-import mongoose from 'mongoose';
-import config from 'config';
-import log from './logger.util';
+import mongoose from "mongoose";
+import log from "./logger.util";
 
 async function connect() {
-  const connectionURI = config.get<string>('dbUri')
+  const connectionURI = process.env.DBURI ?? "";
 
   try {
     await mongoose.connect(connectionURI);
-    log.info('Database connected successfully');
+    log.info("Database connected successfully");
   } catch (error) {
-    log.error('Database connection failed');
+    log.error("Database connection failed");
     log.error(error);
     process.exit(1);
   }

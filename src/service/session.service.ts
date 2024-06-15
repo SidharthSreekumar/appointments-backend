@@ -3,7 +3,6 @@ import SessionModel, { SessionDocument } from "../models/session.model";
 import { signJwt, verifyJwt } from "../utils/jwt.util";
 import { get } from "lodash";
 import { findUser } from "./user.service";
-import config from "config";
 
 export async function createSession(userID: string, userAgent: string) {
   const session = await SessionModel.create({ user: userID, userAgent });
@@ -45,9 +44,11 @@ export async function reIssueAccessToken({
       session: session._id,
     },
     {
-      expiresIn: config.get<string>("accessTokenTtl"), // 15 min
+      expiresIn: process.env.ACCESSTOKENTTL ?? "15m", // 15 min
     }
   );
 
   return accessToken;
 }
+
+// export async function deactivateSession(params: type) {}

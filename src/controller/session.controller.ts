@@ -6,7 +6,6 @@ import {
   updateSession,
 } from "../service/session.service";
 import { signJwt } from "../utils/jwt.util";
-import config from "config";
 import log from "../utils/logger.util";
 import HttpException from "../utils/exceptions/http.exception";
 
@@ -30,7 +29,7 @@ export async function createUserSessionHandler(
           session: session._id,
         },
         {
-          expiresIn: config.get<string>("accessTokenTtl"), // 15 min
+          expiresIn: process.env.ACCESSTOKENTTL ?? "15m", // 15 min
         }
       );
       const refreshToken = signJwt(
@@ -39,7 +38,7 @@ export async function createUserSessionHandler(
           session: session._id,
         },
         {
-          expiresIn: config.get<string>("refreshTokenTtl"), // 1yr
+          expiresIn: process.env.REFRESHTOKENTTL ?? "1y", // 1yr
         }
       );
 
