@@ -50,5 +50,3 @@ export async function reIssueAccessToken({
 
   return accessToken;
 }
-
-// export async function deactivateSession(params: type) {}

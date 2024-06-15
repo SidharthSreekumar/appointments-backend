@@ -16,8 +16,8 @@ router
   // Create session
   .post(validateResource(createSessionSchema), createUserSessionHandler)
   // Get current user active sessions
-  .get(requireUser, getUserSessionsHandler)
+  .get(requireUser(true), getUserSessionsHandler)
   // Delete session or logout
-  .delete(requireUser, deleteSessionHandler);
+  .delete(requireUser(), deleteSessionHandler);
 
 export default router;

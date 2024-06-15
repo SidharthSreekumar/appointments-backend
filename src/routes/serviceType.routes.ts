@@ -15,7 +15,7 @@ const router = express.Router();
 router
   .route("/")
   .post(
-    requireUser,
+    requireUser(),
     validateResource(createServiceTypeSchema),
     createServiceTypeHandler
   )
