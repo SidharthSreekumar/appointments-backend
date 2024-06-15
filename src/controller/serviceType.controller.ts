@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
   createServiceType,
+  editServiceType,
   getAllActiveServiceTypes,
   getServiceType,
 } from "../service/serviceType.service";
@@ -8,6 +9,7 @@ import log from "../utils/logger.util";
 import {
   CreateServiceTypeInput,
   GetServiceTypeInput,
+  UpdateServiceTypeInput,
 } from "../schema/serviceType.schema";
 import HttpException from "../utils/exceptions/http.exception";
 
@@ -53,5 +55,21 @@ export async function getAllActiveServiceTypesHandler(
   } catch (error: any) {
     log.error(error);
     next(new HttpException(404, error?.message));
+  }
+}
+
+export async function updateServiceTypeHandler(
+  req: Request<UpdateServiceTypeInput["params"]>,
+  res: Response,
+  next: NextFunction
+) {
+  const serviceTypeId = req.params.serviceTypeId;
+  const update = req.body;
+  try {
+    const serviceType = await editServiceType({ serviceTypeId }, update);
+    return res.send(serviceType);
+  } catch (error: any) {
+    log.error(error);
+    next(new HttpException(500, error?.message));
   }
 }

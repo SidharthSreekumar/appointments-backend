@@ -4,11 +4,13 @@ import validateResource from "../middleware/validateResource";
 import {
   createServiceTypeSchema,
   getServiceTypeSchema,
+  updateServiceTypeSchema,
 } from "../schema/serviceType.schema";
 import {
   createServiceTypeHandler,
   getAllActiveServiceTypesHandler,
   getServiceTypeHandler,
+  updateServiceTypeHandler,
 } from "../controller/serviceType.controller";
 const router = express.Router();
 
@@ -25,6 +27,13 @@ router.get(
   "/:serviceTypeId",
   validateResource(getServiceTypeSchema),
   getServiceTypeHandler
+);
+
+router.patch(
+  "/:serviceTypeId",
+  requireUser(true),
+  validateResource(updateServiceTypeSchema),
+  updateServiceTypeHandler
 );
 
 export default router;

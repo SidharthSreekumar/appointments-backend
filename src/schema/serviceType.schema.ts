@@ -34,9 +34,10 @@ export const getServiceTypeSchema = object({
 });
 
 export const updateServiceTypeSchema = object({
-  ...payload,
   ...params,
+  ...payload,
 });
 
 export type CreateServiceTypeInput = TypeOf<typeof createServiceTypeSchema>;
 export type GetServiceTypeInput = TypeOf<typeof getServiceTypeSchema>;
+export type UpdateServiceTypeInput = TypeOf<typeof updateServiceTypeSchema>;

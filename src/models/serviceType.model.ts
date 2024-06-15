@@ -41,9 +41,11 @@ serviceSchema.pre("save", async function (next) {
   if (existingServiceType) {
     return next(new Error("Service Type with this name already exists"));
   }
-  const randomString = await getAlphaNumString(10);
-  serviceType.serviceTypeId =
-    serviceType.name.toLowerCase() + "-" + randomString;
+  if (serviceType.isNew) {
+    const randomString = await getAlphaNumString(10);
+    serviceType.serviceTypeId =
+      serviceType.name.toLowerCase() + "-" + randomString;
+  }
 });
 
 const ServiceTypeModel = mongoose.model<ServiceTypeDocument>(

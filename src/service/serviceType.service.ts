@@ -57,5 +57,28 @@ export async function editServiceType(
 ) {
   try {
     const serviceType = await ServiceTypeModel.findOne({ ...query });
-  } catch (error) {}
+    if (!serviceType) throw new Error("Service Type not found");
+    Object.assign(serviceType, input);
+    const updatedServiceType = await serviceType.save();
+    log.info(updatedServiceType);
+    return omit(serviceType.toJSON(), ["__v", "_id"]);
+  } catch (error: any) {
+    log.error(error);
+    throw new Error(error);
+  }
+}
+
+export async function disableServiceType(
+  query: FilterQuery<ServiceTypeDocument>
+) {
+  try {
+    const serviceType = await ServiceTypeModel.findOne({ ...query });
+    if (!serviceType) throw new Error("Service Type not found");
+    serviceType.isActive = false;
+    const updatedServiceType = await serviceType.save();
+    return updatedServiceType;
+  } catch (error: any) {
+    log.error(error);
+    throw new Error(error);
+  }
 }
