@@ -38,7 +38,7 @@ serviceSchema.pre("save", async function (next) {
       $regex: new RegExp("^" + serviceType.name.toLowerCase() + "$", "i"),
     },
   });
-  if (existingServiceType) {
+  if (existingServiceType && serviceType.isNew) {
     return next(new Error("Service Type with this name already exists"));
   }
   if (serviceType.isNew) {

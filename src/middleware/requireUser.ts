@@ -3,6 +3,12 @@ import UserModel from "../models/user.model";
 import log from "../utils/logger.util";
 import HttpException from "../utils/exceptions/http.exception";
 
+/**
+ * A middleware to make sure that a route has logged in user session information.
+ *
+ * @param requireAdmin Set to true for admin only routes. Default is false.
+ * @returns next function
+ */
 const requireUser =
   (requireAdmin: boolean = false) =>
   async (req: Request, res: Response, next: NextFunction) => {

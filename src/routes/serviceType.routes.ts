@@ -8,6 +8,7 @@ import {
 } from "../schema/serviceType.schema";
 import {
   createServiceTypeHandler,
+  disableServiceTypeHandler,
   getAllActiveServiceTypesHandler,
   getServiceTypeHandler,
   updateServiceTypeHandler,
@@ -34,6 +35,13 @@ router.patch(
   requireUser(true),
   validateResource(updateServiceTypeSchema),
   updateServiceTypeHandler
+);
+
+router.delete(
+  "/:serviceTypeId",
+  requireUser(true),
+  validateResource(getServiceTypeSchema),
+  disableServiceTypeHandler
 );
 
 export default router;

@@ -19,7 +19,6 @@ export async function createServiceType(
     const serviceType = await ServiceTypeModel.create(input);
     return omit(serviceType.toObject(), ["__v", "_id", "isActive"]);
   } catch (error: any) {
-    log.error(error);
     throw new Error(error);
   }
 }
@@ -34,7 +33,6 @@ export async function getServiceType(query: FilterQuery<ServiceTypeDocument>) {
     if (!serviceType) throw new Error("Service Type not found");
     return serviceType;
   } catch (error: any) {
-    log.error(error);
     throw new Error(error);
   }
 }
@@ -46,7 +44,6 @@ export async function getAllActiveServiceTypes() {
       .lean();
     return serviceTypes;
   } catch (error: any) {
-    log.error(error);
     throw new Error(error);
   }
 }
@@ -63,7 +60,6 @@ export async function editServiceType(
     log.info(updatedServiceType);
     return omit(serviceType.toJSON(), ["__v", "_id"]);
   } catch (error: any) {
-    log.error(error);
     throw new Error(error);
   }
 }
@@ -78,7 +74,6 @@ export async function disableServiceType(
     const updatedServiceType = await serviceType.save();
     return updatedServiceType;
   } catch (error: any) {
-    log.error(error);
     throw new Error(error);
   }
 }

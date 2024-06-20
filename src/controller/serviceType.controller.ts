@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
   createServiceType,
+  disableServiceType,
   editServiceType,
   getAllActiveServiceTypes,
   getServiceType,
@@ -71,5 +72,20 @@ export async function updateServiceTypeHandler(
   } catch (error: any) {
     log.error(error);
     next(new HttpException(500, error?.message));
+  }
+}
+
+export async function disableServiceTypeHandler(
+  req: Request<UpdateServiceTypeInput["params"]>,
+  res: Response,
+  next: NextFunction
+) {
+  const serviceTypeId = req.params.serviceTypeId;
+  try {
+    const serviceType = await disableServiceType({ serviceTypeId });
+    return res.send(serviceType);
+  } catch (error: any) {
+    log.error(error);
+    next(new HttpException(404, error?.message));
   }
 }
