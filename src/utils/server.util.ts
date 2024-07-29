@@ -4,6 +4,7 @@ import routes from "../routes/app.routes";
 import userRoutes from "../routes/user.routes";
 import sessionRoutes from "../routes/session.routes";
 import serviceTypeRoutes from "../routes/serviceType.routes";
+import appointmentRoutes from "../routes/appointment.routes";
 import errorHandler from "../middleware/errorHandler";
 
 function createServer() {
@@ -16,6 +17,7 @@ function createServer() {
   app.use("/api/users", userRoutes);
   app.use("/api/sessions", sessionRoutes);
   app.use("/api/service-type", serviceTypeRoutes);
+  app.use("/api/appointment", appointmentRoutes);
 
   routes(app);
 
