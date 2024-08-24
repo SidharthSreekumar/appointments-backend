@@ -76,4 +76,18 @@ export async function editAppointment(
   }
 }
 
-// Cancel appointment
+// Cancel appointment before
+export async function cancelAppointment(
+  userId: UserDocument["_id"],
+  query: FilterQuery<AppointmentDocument>
+) {
+  try {
+    const appointment = await AppointmentModel.findOne({ ...query });
+    if (!appointment) throw new Error("Appointment not found");
+    appointment.valid = false;
+    const updatedAppointment = await appointment.save();
+    return updatedAppointment;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}

@@ -8,4 +8,5 @@ dist
 .env
 
 # IDE
-.vscode
+.vscode/
+.vscode/settings.json
