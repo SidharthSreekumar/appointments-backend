@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { UserDocument } from "./user.model";
 import ServiceTypeModel, { ServiceTypeDocument } from "./serviceType.model";
+import dayjs from "dayjs";
 
 export interface AppointmentInput {
   client: UserDocument["_id"];
@@ -44,6 +45,18 @@ const appointmentSchema = new mongoose.Schema(
 appointmentSchema.pre("save", async function (next) {
   const appointment = this as AppointmentDocument;
 
+  const oldAppointment = await AppointmentModel.findOne({
+    _id: appointment._id,
+  });
+  // If there is an old appointment and if the time is same then skip the validation
+  // This is part of reusing edit appointment workflow for cancelling appointment
+  if (
+    oldAppointment &&
+    dayjs(oldAppointment.startTime).isSame(dayjs(appointment.startTime)) &&
+    dayjs(oldAppointment.endTime).isSame(dayjs(appointment.endTime))
+  ) {
+    next();
+  }
   // Getting service duration for the input id
   const serviceType = await ServiceTypeModel.findOne({
     serviceTypeId: appointment.serviceTypeId,
@@ -53,14 +66,12 @@ appointmentSchema.pre("save", async function (next) {
     throw new Error("Service Type does not exist");
   }
 
-  const parsedStartTime = new Date(appointment.dateTime);
-  const parsedEndTime = new Date(appointment.dateTime);
-  parsedEndTime.setMinutes(
-    parsedStartTime.getMinutes() + (serviceType?.duration ?? 30)
-  );
-
-  appointment.startTime = parsedStartTime;
-  appointment.endTime = parsedEndTime;
+  // Setting start time and end time adding the service duration.
+  const duration = serviceType.duration ?? 30;
+  appointment.startTime = dayjs(appointment.dateTime).toDate();
+  appointment.endTime = dayjs(appointment.dateTime)
+    .add(duration, "minute")
+    .toDate();
 
   // Checking for existing appointments for the input time
   const existingAppointment = await AppointmentModel.findOne({
@@ -75,9 +86,8 @@ appointmentSchema.pre("save", async function (next) {
   }).lean();
 
   if (existingAppointment) {
-    throw new Error("Slot is already booked for time");
+    next(new Error("Slot is already booked for time"));
   }
-
   next();
 });
 

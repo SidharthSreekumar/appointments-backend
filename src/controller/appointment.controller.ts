@@ -5,6 +5,7 @@ import {
 } from "../schema/appointment.schema";
 import {
   createAppointment,
+  editAppointment,
   getAllActiveAppointments,
   getAllUserAppointments,
 } from "../service/appointment.service";
@@ -67,8 +68,13 @@ export async function editAppointmentHandler(
   try {
     const userId = res.locals.user._id;
     const appointmentId = req.params.appointmentId;
-    // const appointment = await editAppointment(userId, );
-    // return res.send(appointment);
+    const update = req.body;
+    const appointment = await editAppointment(
+      userId,
+      { _id: appointmentId },
+      update
+    );
+    return res.send(appointment);
   } catch (error: any) {
     log.error(error);
     next(new HttpException(409, error?.message));

@@ -19,7 +19,6 @@ const params = {
   }),
 };
 export const createAppointmentSchema = object({ ...payload });
-
 export const editAppointmentSchema = object({ ...params, ...payload });
 
 export type CreateAppointmentInput = TypeOf<typeof createAppointmentSchema>;

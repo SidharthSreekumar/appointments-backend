@@ -4,7 +4,8 @@ import AppointmentModel, {
   AppointmentInput,
 } from "../models/appointment.model";
 import UserModel, { UserDocument } from "../models/user.model";
-import log from "../utils/logger.util";
+import dayjs from "dayjs";
+import { omit } from "lodash";
 
 /**
  * Create an appointment
@@ -38,55 +39,70 @@ export async function getAllActiveAppointments(userId: UserDocument["_id"]) {
   }
 }
 
-// Get all active appointments of a logged in non admin user
+/**
+ * Get all active appointments of a logged in non admin user
+ *
+ * @param userId - id of the user
+ * @returns active appointments of the user
+ */
 export async function getAllUserAppointments(userId: UserDocument["_id"]) {
   try {
+    // Check if user is logged in
     if (!userId) throw new Error("Logged in user not found");
+
+    // Find all active appointments of the user
     const appointments = await AppointmentModel.find({
       client: userId,
       valid: true,
     }).lean();
+
+    // Return the appointments
     return appointments;
   } catch (error: any) {
+    // Handle any errors
     throw new Error(error);
   }
 }
 
-// Edit appointment before 24 hours (or a set time)
+/**
+ * Edit an appointment
+ * @param userId - user id who is editing the appointment
+ * @param query - query to find the appointment
+ * @param input - input to edit the appointment
+ * @returns edited appointment
+ */
 export async function editAppointment(
   userId: UserDocument["_id"],
   query: FilterQuery<AppointmentDocument>,
   input: Omit<AppointmentInput, "client">
-) {
+): Promise<Omit<AppointmentDocument, "__v" | "_id">> {
   try {
     const appointment = await AppointmentModel.findOne({ ...query });
-    if (!appointment) throw new Error("Appointment not found");
-    const oneDay = 24 * 60 * 60 * 1000; // 24 hours
-    const timeDifference =
-      Number(Date.now()) - Number(appointment.startTime.toUTCString());
-    log.info({
-      timeDifference,
-      oneDay,
-      dateNow: Date.now(),
-      appDate: appointment.startTime.toUTCString(),
-    });
-    // if (Date.now) Object.assign(appointment, input);
-  } catch (error: any) {
-    throw new Error(error);
-  }
-}
+    const user = await UserModel.findById(userId);
 
-// Cancel appointment before
-export async function cancelAppointment(
-  userId: UserDocument["_id"],
-  query: FilterQuery<AppointmentDocument>
-) {
-  try {
-    const appointment = await AppointmentModel.findOne({ ...query });
-    if (!appointment) throw new Error("Appointment not found");
-    appointment.valid = false;
-    const updatedAppointment = await appointment.save();
-    return updatedAppointment;
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Only the owner or admin can edit an appointment
+    if (!user?.isAdmin || !user.id.equals(appointment?.client)) {
+      throw new Error("Only the owner or admin can edit an appointment");
+    }
+
+    if (!appointment) {
+      throw new Error("Appointment not found");
+    }
+
+    // Checking if the original appointment date is at least 24 hours after
+    const currentDate = dayjs();
+    // current date < appointment date - 1 day
+    if (dayjs().isBefore(dayjs(appointment.startTime).subtract(1, "day"))) {
+      Object.assign(appointment, input);
+      const updatedAppointment = await appointment.save();
+      return omit(updatedAppointment.toJSON(), ["__v", "_id"]);
+    } else {
+      throw new Error("Cannot edit an appointment before 24 hours");
+    }
   } catch (error: any) {
     throw new Error(error);
   }
