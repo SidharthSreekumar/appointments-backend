@@ -21,9 +21,23 @@ export const createUserSchema = object({
   }),
 });
 
+export const editUserSchema = object({
+  body: object({
+    firstName: string(),
+    lastName: string(),
+  }),
+  params: object({
+    userId: string({
+      required_error: "User ID is required",
+    }),
+  }),
+});
+
 export type CreateUserInput = Omit<
   TypeOf<typeof createUserSchema>,
   "body.passwordConfirmation"
 >;
+
+export type EditUserInput = TypeOf<typeof editUserSchema>;
 
 // isAdmin is omitted at the moment. Admin creation feature via front-end is for future.

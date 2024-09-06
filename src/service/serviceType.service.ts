@@ -16,7 +16,8 @@ export async function createServiceType(
     if (!user?.isAdmin) {
       throw new Error("Only an admin user can create a Service Type");
     }
-    const serviceType = await ServiceTypeModel.create(input);
+    const newServiceType = { ...input, createdBy: userId };
+    const serviceType = await ServiceTypeModel.create(newServiceType);
     return omit(serviceType.toObject(), ["__v", "_id", "isActive"]);
   } catch (error: any) {
     throw new Error(error);

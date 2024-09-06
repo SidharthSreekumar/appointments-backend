@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import log from "../utils/logger.util";
-import { createUser } from "../service/user.service";
-import { CreateUserInput } from "../schema/user.schema";
+import { createUser, editUser } from "../service/user.service";
+import { CreateUserInput, EditUserInput } from "../schema/user.schema";
 import HttpException from "../utils/exceptions/http.exception";
 
 // @desc creates a new user
@@ -17,5 +17,21 @@ export async function createUserHandler(
   } catch (error: any) {
     log.error(error);
     next(new HttpException(409, error?.message));
+  }
+}
+
+export async function editUserHandler(
+  req: Request<EditUserInput["params"], object, EditUserInput["body"]>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const loggedInUser = res.locals.user._id;
+    const userId = req.params.userId;
+    const user = await editUser(userId, loggedInUser, req.body);
+    return res.send(user);
+  } catch (error: any) {
+    log.error(error);
+    next(new HttpException(403, error?.message));
   }
 }

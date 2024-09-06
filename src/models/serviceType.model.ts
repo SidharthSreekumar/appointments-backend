@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import getAlphaNumString from "../utils/nanoid.util";
+import { UserDocument } from "./user.model";
 
 export interface ServiceTypeInput {
   name: string;
@@ -13,6 +14,7 @@ export interface ServiceTypeDocument
     mongoose.Document {
   serviceTypeId: string;
   isActive: boolean;
+  createdBy: UserDocument["_id"];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,6 +27,7 @@ const serviceSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     serviceTypeId: { type: String, unique: true },
     isActive: { type: Boolean, default: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   {
     timestamps: true,
